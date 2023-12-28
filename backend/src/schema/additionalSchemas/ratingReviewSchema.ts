@@ -29,5 +29,5 @@ const ratingReviewSchema = new Schema(
   { timestamps: true }
 );
 
-const ratingReview = model("ratingReview", ratingReviewSchema);
+const ratingReview = model<IRatingReview>("ratingReview", ratingReviewSchema);
 export default ratingReview;

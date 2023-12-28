@@ -32,5 +32,5 @@ const courseSectionSchema = new Schema(
   { timestamps: true }
 );
 
-const Section = model("Section", courseSectionSchema);
+const Section = model<ICourseSection>("Section", courseSectionSchema);
 export default Section; 

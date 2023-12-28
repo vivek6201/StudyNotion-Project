@@ -31,5 +31,8 @@ const courseProgressSchema = new Schema(
   { timestamps: true }
 );
 
-const courseProgress = model("courseProgress", courseProgressSchema);
+const courseProgress = model<ICourseProgress>(
+  "courseProgress",
+  courseProgressSchema
+);
 export default courseProgress;

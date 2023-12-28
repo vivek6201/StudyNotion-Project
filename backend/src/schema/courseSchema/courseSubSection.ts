@@ -35,5 +35,5 @@ const courseSubSectionSchema = new Schema(
   { timestamps: true }
 );
 
-const subSection = model("subSection", courseSubSectionSchema);
+const subSection = model<ICourseSubSection>("subSection", courseSubSectionSchema);
 export default subSection;

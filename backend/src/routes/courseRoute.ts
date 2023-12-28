@@ -78,7 +78,7 @@ router.delete(
   isInstuctor,
   deleteCourseSubSectionController
 );
-router.delete("/delete-course", isAuth, isInstuctor, deleteCourseController);
+router.delete("/delete-course/:id", isAuth, isInstuctor, deleteCourseController);
 
 //rating and review routes
 router.post("/create-review", isAuth, isStudent, createCourseReviewController);

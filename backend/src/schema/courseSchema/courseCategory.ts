@@ -26,5 +26,5 @@ const courseCategorySchema = new Schema(
   { timestamps: true }
 );
 
-const Category = model("Category", courseCategorySchema);
+const Category = model<ICourseCategory>("Category", courseCategorySchema);
 export default Category;

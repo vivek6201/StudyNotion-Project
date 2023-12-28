@@ -1,6 +1,7 @@
 import * as z from "zod";
+import { courseStatus } from "../../utils/constants";
 
-export const createCourseValidations = z.object({
+export const courseValidations = z.object({
   courseName: z.string().min(3).max(50),
   courseDescription: z.string().min(3).max(500),
   courseContent: z.array(z.string()).optional(),
@@ -9,22 +10,21 @@ export const createCourseValidations = z.object({
   studentsEnrolled: z.array(z.string()).optional(),
   isDiscounted: z.boolean().default(false),
   discount: z.number().optional(),
-  courseStatus: z.string().default("Draft"),
+  courseStatus: z.string().default(courseStatus.DRAFT),
   coursePrice: z.string(),
-  courseInstructor: z.string()
+  courseInstructor: z.string(),
 });
 
-export const createSectionValidations = z.object({
+export const sectionValidations = z.object({
   sectionName: z.string().min(3).max(50),
   sectionDescription: z.string().min(3).max(500),
   sectionContent: z.array(z.string()).optional(),
 });
 
-export const createSubSectionValidations = z.object({
+export const subSectionValidations = z.object({
   subSectionName: z.string().min(3).max(50),
   subSectionDescription: z.string().min(3).max(500),
   duration: z.string(),
-  videoUrl: z.string(),
 });
 
 export const courseProgressValidations = z.object({

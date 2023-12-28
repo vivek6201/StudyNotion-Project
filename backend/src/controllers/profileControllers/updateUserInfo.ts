@@ -2,8 +2,10 @@ import { Request, Response } from "express";
 import userProfileValidations from "../../validations/profileValidations/userProfileValidations";
 import statusCode from "../../utils/statusCodes";
 import * as z from "zod";
-import User from "../../schema/userSchema/userSchema";
+import User, { IUser } from "../../schema/userSchema/userSchema";
 import Profile, { IProfile } from "../../schema/userSchema/profileSchema";
+import { FileArray } from "express-fileupload";
+import fileUploadCloudinary from "../../services/fileUploader";
 
 export const updateUserDataController = async (req: Request, res: Response) => {
   try {
@@ -37,21 +39,21 @@ export const updateUserDataController = async (req: Request, res: Response) => {
         message: "User not found",
       });
     }
-    let userProfileData : IProfile;
+    let userProfileData: IProfile;
 
     //update user data
     if (!user.profileInfo) {
-        userProfileData = await Profile.create<IProfile>({
-            ...validatedData,
-        });
+      userProfileData = await Profile.create<IProfile>({
+        ...validatedData,
+      });
     } else {
-        userProfileData = await Profile.findByIdAndUpdate(
-            user.profileInfo,
-            {
-                ...validatedData,
-            },
-            { new: true }
-        ) as IProfile; 
+      userProfileData = (await Profile.findByIdAndUpdate<IProfile>(
+        user.profileInfo,
+        {
+          ...validatedData,
+        },
+        { new: true }
+      )) as IProfile;
     }
 
     await User.findByIdAndUpdate(
@@ -77,5 +79,57 @@ export const updateUserProfilePicController = async (
   req: Request,
   res: Response
 ) => {
-    
+  try {
+    const { userId } = req.headers;
+    const { profilePic } = req.files as FileArray;
+
+    if (!profilePic) {
+      return res.status(statusCode.NOT_FOUND).json({
+        message: "image not provided",
+      });
+    }
+
+    const checkUser = await User.findById(userId);
+
+    if (!checkUser) {
+      return res.status(statusCode.UNAUTHORIZED).json({
+        message: "User not found",
+      });
+    }
+
+    let imageUrl: string = "";
+    try {
+      const res = await fileUploadCloudinary(
+        profilePic,
+        process.env.FOLDER_NAME!,
+        null,
+        80
+      );
+      imageUrl = res.secure_url;
+    } catch (error) {
+      return res.status(statusCode.BAD_REQUEST).json({
+        message: "Failed to upload image",
+      });
+    }
+
+    const userData = (await User.findByIdAndUpdate(
+      userId,
+      {
+        profilePicture: imageUrl,
+      },
+      { new: true }
+    ).populate("profileInfo")) as IUser;
+
+    userData.password = "";
+
+    return res.status(statusCode.OK).json({
+      message: "Profile photo uploaded successfully",
+      userData,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(statusCode.INTERNAL_SERVER_ERROR).json({
+      message: "Internal serverv error",
+    });
+  }
 };

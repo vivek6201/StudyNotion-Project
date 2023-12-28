@@ -78,5 +78,5 @@ const courseSchema = new Schema(
   { timestamps: true }
 );
 
-const Course = model("Course", courseSchema);
+const Course = model<ICourse>("Course", courseSchema);
 export default Course;
