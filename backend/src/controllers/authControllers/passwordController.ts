@@ -47,7 +47,7 @@ export const forgotPasswordController = async (req: Request, res: Response) => {
       { new: true }
     );
 
-    const url = `http://localhost:3000/reset-password?token=${generatedToken}`;
+    const url = `http://localhost:3000/forgot-password/reset?token=${generatedToken}`;
 
     //todo: send otp to email
     return res.status(statusCode.CREATED).json({
